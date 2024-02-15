@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mModelReady = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //构造函数：初始化变量
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mIntent = new Intent(this, Conversation.class);
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mModelDir = this.getCacheDir() + "/" + mModelName;
         populateFoldersSpinner();
         mSpinnerModels.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //对下拉框（Spinner）设置选择监听器，用来选择模型
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mProcessHandler = new Handler() {
+            //显示加载进度条，当进度条满时进入下一个activity(Chat)
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     mLoadButton.setClickable(true);
                     mLoadButton.setBackgroundColor(Color.parseColor("#3e3ddf"));
                     mLoadButton.setText("加载已完成");
+                    //将名为 "chat" 的额外数据放入 mIntent 中，利用mIntent传递给新的活动
                     mIntent.putExtra("chat", mChat);
                     startActivity(mIntent);
                 }
@@ -92,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCheckModels() {
         mModelReady = checkModelsReady();
-        // try copy from assert file
+        // 若模型未准备,从assert文件夹中复制模型到本地（本项目不含模型）
         if (!mModelReady) {
             try {
                 mModelDir = Common.copyAssetResource2File(this, mModelName);
@@ -115,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public boolean checkModelsReady() {
+        //检查模型是否准备就绪
         System.out.println("### Check Models!");
         File dir = new File(mModelDir);
         if (!dir.exists()) {
@@ -131,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> getFoldersList(String path) {
+        //获取文件夹（qwen-1.8b-init4）中的文件名称列表
         File directory = new File(path);
         File[] files = directory.listFiles();
         ArrayList<String> foldersList = new ArrayList<>();
@@ -145,14 +151,20 @@ public class MainActivity extends AppCompatActivity {
         return foldersList;
     }
     private void populateFoldersSpinner() {
+//        设置模型路径,显示模型文件列表：
+//        推送方式
+//        adb shell mkdir /data/local/tmp/mnn-llm
+//        adb push ./qwen-1.8b-mnn  /data/local/tmp/mnn-llm
         ArrayList<String> folders = getFoldersList("/data/local/tmp/mnn-llm");
         folders.add(0, getString(R.string.spinner_prompt));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, folders);
         mSpinnerModels.setAdapter(adapter);
     }
     public void loadModel(View view) {
+        //检查是否含有对应模型
         onCheckModels();
         if (!mModelReady) {
+            //跳转至模型下载活动
             startActivity(new Intent(this, DownloadModel.class));
             return;
         }
@@ -161,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         mLoadButton.setText("模型加载中 ...");
         mProcessView.setVisibility(View.VISIBLE);
         mChat = new Chat();
+        //创建任务处理对象，当接收到消息时，调用Chat活动
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -168,9 +181,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(mIntent);
             }
         };
-        // copy models
+        //创建loadthread线程并传入任务处理对象handler
         LoadThread loadT = new LoadThread(mChat, handler, mModelDir);
         loadT.start();
+        //创建progressthread线程用于更新模型加载进度（？
         ProgressThread progressT = new ProgressThread(mChat, mProcessHandler);
         progressT.start();
     }
