@@ -1,0 +1,5 @@
+# ninja log v5
+0	742	1707836182	CMakeFiles/llm_mnn.dir/llm_mnn_jni.cpp.o	3ac99cfc817d61ff
+1	1045	1707836183	CMakeFiles/llm_mnn.dir/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/llm.cpp.o	378310279460b0e
+1	1229	1707836183	CMakeFiles/llm_mnn.dir/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/tokenizer.cpp.o	2b642a9267f7d04b
+1230	1368	1707836183	/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/build/intermediates/cmake/debug/obj/arm64-v8a/libllm_mnn.so	344b2a164818b444

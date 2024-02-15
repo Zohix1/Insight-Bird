@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/root/Android/Sdk/ndk/21.0.6113669/build/cmake/platforms.cmake",
+    "/root/Android/Sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
+    "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/root/Android/Sdk/cmake/3.10.2.4988404/bin/ninja -C \"/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/debug/arm64-v8a\" clean"
+  ],
+  "buildTargetsCommand": "/root/Android/Sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/debug/arm64-v8a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "llm_mnn-Debug-arm64-v8a": {
+      "artifactName": "llm_mnn",
+      "buildCommand": "/root/Android/Sdk/cmake/3.10.2.4988404/bin/ninja -C \"/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/debug/arm64-v8a\" llm_mnn",
+      "abi": "arm64-v8a",
+      "output": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/build/intermediates/cmake/debug/obj/arm64-v8a/libllm_mnn.so",
+      "runtimeFiles": []
+    }
+  }
+}

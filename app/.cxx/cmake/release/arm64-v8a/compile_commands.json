@@ -1,0 +1,19 @@
+[
+{
+  "directory": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/release/arm64-v8a",
+  "command": "/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --gcc-toolchain=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DUSING_DISK_EMBED -Dllm_mnn_EXPORTS -I/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/../../../../../include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -DNDEBUG  -fPIC   -o CMakeFiles/llm_mnn.dir/llm_mnn_jni.cpp.o -c /home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/llm_mnn_jni.cpp",
+  "file": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/llm_mnn_jni.cpp"
+},
+
+{
+  "directory": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/release/arm64-v8a",
+  "command": "/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --gcc-toolchain=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DUSING_DISK_EMBED -Dllm_mnn_EXPORTS -I/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/../../../../../include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -DNDEBUG  -fPIC   -o CMakeFiles/llm_mnn.dir/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/llm.cpp.o -c /home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/llm.cpp",
+  "file": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/llm.cpp"
+},
+
+{
+  "directory": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/.cxx/cmake/release/arm64-v8a",
+  "command": "/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android21 --gcc-toolchain=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/root/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DUSING_DISK_EMBED -Dllm_mnn_EXPORTS -I/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/android/app/src/main/jni/../../../../../include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -DNDEBUG  -fPIC   -o CMakeFiles/llm_mnn.dir/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/tokenizer.cpp.o -c /home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/tokenizer.cpp",
+  "file": "/home/zohix/AndroidProject/mnn-llm-mnn-llm-apk/src/tokenizer.cpp"
+}
+]
