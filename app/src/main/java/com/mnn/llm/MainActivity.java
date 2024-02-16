@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         //创建loadthread线程并传入任务处理对象handler
         LoadThread loadT = new LoadThread(mChat, handler, mModelDir);
         loadT.start();
-        //创建progressthread线程用于更新模型加载进度（？
+        //创建progressthread线程用于更新模型加载进度：传入的是进度条显示处理器
         ProgressThread progressT = new ProgressThread(mChat, mProcessHandler);
         progressT.start();
     }
@@ -202,6 +202,7 @@ class LoadThread extends Thread {
     public void run() {
         super.run();
         mChat.Init(mModelDir);
+        //向handler发送消息，用于启动handler中的chat活动
         mHandler.sendMessage(new Message());
     }
 }
@@ -219,6 +220,7 @@ class ProgressThread extends Thread {
         super.run();
         float progress = 0;
         while (progress < 100) {
+            //隔一段时间更新进度条数据，并返回消息给handler，进行进度显示
             try {
                 Thread.sleep(50);
             } catch (Exception e) {}
