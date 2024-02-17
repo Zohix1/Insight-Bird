@@ -36,11 +36,14 @@ public class Conversation extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //打开对话界面，初始化日期和对话
         setContentView(R.layout.activity_conversation);
         mChat = (Chat) getIntent().getSerializableExtra("chat");
         mDateFormat = new SimpleDateFormat("hh:mm aa");
+        //初始化导航栏
         setupToolbarWithUpNav(R.id.toolbar, "mnn-llm", R.drawable.ic_action_back);
 
+        //利用适配器将recycleview中的数据和视图（initData）进行绑定，并将recyclerview滚动到最后一个位置
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -65,6 +68,7 @@ public class Conversation extends BaseActivity {
                 }, 500);
             }
         });
+        //发送信息事件，可以改为当获取到消息时触发
         send = (Button) findViewById(R.id.bt_send);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,6 +135,7 @@ public class Conversation extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //导航栏中图标的显示，可以改为选择其他页面
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_userphoto, menu);
         return true;
@@ -138,6 +143,7 @@ public class Conversation extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //点击导航栏中菜单后的事件，可以改为切换其他页面
         /*
         if (mHistory) {
             Toast.makeText(getBaseContext(), "关闭上下文", Toast.LENGTH_SHORT).show();
