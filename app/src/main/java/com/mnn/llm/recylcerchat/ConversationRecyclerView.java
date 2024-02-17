@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    // The items to display in your RecyclerView
+    //用列表保存聊天数据，并根据不同的标签进行不同的显示
     private List<ChatData> items;
     private Context mContext;
 
@@ -21,6 +21,7 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ConversationRecyclerView(Context context, List<ChatData> items) {
+        //context表示当前状态,items为传入的参数，初始为初始化的默认对象
         this.mContext = context;
         this.items = items;
     }
@@ -33,7 +34,7 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        //More to come
+        //重写getItemViewType()方法
         if (items.get(position).getType().equals("0")) {
             return DATE;
         } else if (items.get(position).getType().equals("1")) {
@@ -46,6 +47,8 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        //通过创建viewholder实例的回调方法（当该对象在特定生命周期执行特定操作比如创建、被选择、被点击时，可以定义相应的操作），
+        // 参数为当前的父容器（layout）以及通过重写方法获取的列表项类型，当存在新的对话放入列表时，返回给当前父容器的viewholder,更新其页面显示
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
 
@@ -79,6 +82,7 @@ public class ConversationRecyclerView extends RecyclerView.Adapter<RecyclerView.
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        //用于把数据绑定到不同viewholder上
         switch (viewHolder.getItemViewType()) {
             case DATE:
                 HolderDate vh1 = (HolderDate) viewHolder;
