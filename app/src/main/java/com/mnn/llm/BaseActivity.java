@@ -37,6 +37,7 @@ public class BaseActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
     }
     public void setupToolbarWithUpNav(int toolbarId, String titlePage, @DrawableRes int res){
+        //设置导航栏中的返回按钮和界面标题
         toolbar = (Toolbar) findViewById(toolbarId);
         setSupportActionBar(toolbar);
 
@@ -49,6 +50,7 @@ public class BaseActivity extends AppCompatActivity {
     }
     @Override
     protected void attachBaseContext(Context newBase) {
+        //用于自定义字体
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }
