@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
+//从项目assert目录中找到模型并下载到本地
 public class Common {
     public static String copyAssetResource2File(Activity activity, String assetsDir) throws IOException, InterruptedException  {
         AssetManager assetManager = activity.getBaseContext().getAssets();
