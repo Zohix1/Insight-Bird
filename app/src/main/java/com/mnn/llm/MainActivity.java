@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     mLoadButton.setBackgroundColor(Color.parseColor("#3e3ddf"));
                     mLoadButton.setText("加载已完成");
                     //将名为 "chat" 的额外数据放入 mIntent 中，利用mIntent传递给新的活动
+                    //使用intent的几种情况：一个活动切换到另一个活动、在活动之间传递数据、启动服务或广播接收器
                     mIntent.putExtra("chat", mChat);
                     startActivity(mIntent);
                 }

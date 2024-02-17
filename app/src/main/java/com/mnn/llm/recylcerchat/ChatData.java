@@ -14,6 +14,7 @@ public class ChatData {
     public String getType() {
         return type;
     }
+    //2为发送的信息，1为回答的结果
 
     public void setType(String type) {
         this.type = type;

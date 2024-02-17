@@ -75,6 +75,7 @@ public class Conversation extends BaseActivity {
             public void onClick(View view) {
                 String inputString = text.getText().toString();
                 if (!inputString.equals("")){
+                    //创建发送信息对象
                     ChatData item = new ChatData();
                     item.setTime(mDateFormat.format(new Date()));
                     item.setType("2");
@@ -86,16 +87,19 @@ public class Conversation extends BaseActivity {
                     if (inputString.equals("/reset")) {
                         mChat.Reset();
                     } else {
-                        // response
+                        //创建回复信息对象
                         ChatData response = new ChatData();
                         response.setTime(mDateFormat.format(new Date()));
                         response.setType("1");
                         response.setText("");
                         mAdapter.addItem(response);
                         mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount() -1);
+
+                        //这种创建处理器和线程的方式适用于需要在后台执行任务，并且任务执行完成后需要更新 UI 界面的情况。
                         Handler responseHandler = new Handler() {
                             @Override
                             public void handleMessage(Message msg) {
+                                //当返回消息时，更新聊天界面中的回答
                                 super.handleMessage(msg);
                                 ChatData response = new ChatData();
                                 response.setTime(mDateFormat.format(new Date()));
@@ -173,6 +177,7 @@ class ResponseThread extends Thread {
 
     public void run() {
         super.run();
+        //通过chat中的submit函数传入输入内容
         mChat.Submit(mInput);
         String last_response = "";
         System.out.println("[MNN_DEBUG] start response\n");
@@ -180,6 +185,7 @@ class ResponseThread extends Thread {
             try {
                 Thread.sleep(50);
             } catch (Exception e) {}
+            //通过response函数获取回答（50毫秒刷新一次）
             String response = new String(mChat.Response());
             if (response.equals(last_response)) {
                 continue;
