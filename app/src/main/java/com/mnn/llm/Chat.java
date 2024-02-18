@@ -3,6 +3,7 @@ package com.mnn.llm;
 import java.io.Serializable;
 
 public class Chat implements Serializable {
+    //chat对象，包含提交信息和回答等函数
     public native boolean Init(String modelDir);
     public native boolean Ready();
     public native float Progress();
