@@ -1,8 +1,13 @@
 package com.mnn.llm;
 
+import android.app.Notification;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.service.notification.StatusBarNotification;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,20 +16,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mnn.llm.notify.NotifyHelper;
+import com.mnn.llm.notify.NotifyListener;
+import com.mnn.llm.notify.NotifyService;
 import com.mnn.llm.recylcerchat.ChatData;
 import com.mnn.llm.recylcerchat.ConversationRecyclerView;
+
+
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-public class Conversation extends BaseActivity {
+public class Conversation extends BaseActivity implements NotifyListener {
 
+    private static final int REQUEST_CODE = 9527;
     private RecyclerView mRecyclerView;
     private ConversationRecyclerView mAdapter;
     private EditText text;
@@ -114,6 +128,103 @@ public class Conversation extends BaseActivity {
                 }
             }
         });
+        //
+        if (!isNLServiceEnabled()) {
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            startActivityForResult(intent, REQUEST_CODE);
+        } else {
+            toggleNotificationListenerService();
+        }
+        //将当前 Activity 设置为通知的监听器。
+        NotifyHelper.getInstance().setNotifyListener((NotifyListener) this);
+    }
+
+    public boolean isNLServiceEnabled() {
+        //检查是否启用通知监听服务
+        Set<String> packageNames = NotificationManagerCompat.getEnabledListenerPackages(this);
+        if (packageNames.contains(getPackageName())) {
+            return true;
+        }
+        return false;
+    }
+
+    public void toggleNotificationListenerService() {
+        //切换通知监听器服务
+        PackageManager pm = getPackageManager();
+        pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(), NotifyService.class),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+
+        pm.setComponentEnabledSetting(new ComponentName(getApplicationContext(), NotifyService.class),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+    }
+
+//    @Override
+//    public void onReceiveMessage(int type) {
+//        @Override
+//        public void onRemovedMessage(int type) {
+//            switch (type) {
+//                case N_MESSAGE:
+//                    textView.setText("移除短信消息");
+//                    break;
+//                case N_CALL:
+//                    textView.setText("移除来电消息");
+//                    break;
+//                case N_WX:
+//                    textView.setText("移除微信消息");
+//                    break;
+//                case N_QQ:
+//                    textView.setText("移除QQ消息");
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    }
+
+    @Override
+    public void onReceiveMessage(StatusBarNotification sbn) {
+        if (sbn.getNotification() == null) return;
+//        //消息内容
+//        String msgContent = "";
+//        if (sbn.getNotification().tickerText != null) {
+//            msgContent = sbn.getNotification().tickerText.toString();
+//        }
+//
+//        //消息时间
+//        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(sbn.getPostTime()));
+//        textView.setText(String.format(Locale.getDefault(),
+//                "应用包名：%s\n消息内容：%s\n消息时间：%s\n",
+//                sbn.getPackageName(), msgContent, time));
+
+        // 获取Notification对象
+        Notification notification = sbn.getNotification();
+        // 从extras中获取详细信息
+        Bundle extras = notification.extras;
+        String title = "";
+        String maintext = "";
+        String subText = "";
+        if (extras != null) {
+            // 获取通知标题
+            title = extras.getString(Notification.EXTRA_TITLE);
+
+            // 获取通知文本内容
+            maintext = extras.getString(Notification.EXTRA_TEXT);
+
+            // 获取通知子文本内容
+            subText = extras.getString(Notification.EXTRA_SUB_TEXT);
+        }
+
+        // 消息时间
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(sbn.getPostTime()));
+
+        if (subText == null){
+            text.setText(maintext);
+            send.performClick();
+
+        } else {
+            text.setText(subText);
+            send.performClick();
+        }
     }
 
     public List<ChatData> initData(){
@@ -160,6 +271,8 @@ public class Conversation extends BaseActivity {
         mChat.Reset();
         return true;
     }
+
+
 }
 
 class ResponseThread extends Thread {
