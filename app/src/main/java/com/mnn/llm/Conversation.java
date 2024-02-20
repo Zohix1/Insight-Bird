@@ -1,11 +1,13 @@
 package com.mnn.llm;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.service.notification.StatusBarNotification;
 import android.view.Menu;
@@ -32,9 +34,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Conversation extends BaseActivity implements NotifyListener {
 
@@ -45,6 +52,7 @@ public class Conversation extends BaseActivity implements NotifyListener {
     private Button send;
     private DateFormat mDateFormat;
     private Chat mChat;
+    private BlockingQueue<String> messageQueue;
     private boolean mHistory = true;
 
     @Override
@@ -128,7 +136,7 @@ public class Conversation extends BaseActivity implements NotifyListener {
                 }
             }
         });
-        //
+        //启动获取通知权限
         if (!isNLServiceEnabled()) {
             Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
             startActivityForResult(intent, REQUEST_CODE);
@@ -137,6 +145,23 @@ public class Conversation extends BaseActivity implements NotifyListener {
         }
         //将当前 Activity 设置为通知的监听器。
         NotifyHelper.getInstance().setNotifyListener((NotifyListener) this);
+        //
+        messageQueue = new LinkedBlockingQueue<>();
+        //当接收到返回的回答时更新界面
+        Handler processHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                //当返回消息时，更新聊天界面中的回答
+                super.handleMessage(msg);
+                ChatData response = new ChatData();
+                response.setTime(mDateFormat.format(new Date()));
+                response.setType("1");
+                response.setText(msg.obj.toString());
+                mAdapter.updateRecentItem(response);
+            }
+        };
+        ProcessThread processT = new ProcessThread(messageQueue,mChat,processHandler,mHistory);
+        processT.start();
     }
 
     public boolean isNLServiceEnabled() {
@@ -204,9 +229,6 @@ public class Conversation extends BaseActivity implements NotifyListener {
         String maintext = "";
         String subText = "";
         if (extras != null) {
-            // 获取通知标题
-            title = extras.getString(Notification.EXTRA_TITLE);
-
             // 获取通知文本内容
             maintext = extras.getString(Notification.EXTRA_TEXT);
 
@@ -214,17 +236,25 @@ public class Conversation extends BaseActivity implements NotifyListener {
             subText = extras.getString(Notification.EXTRA_SUB_TEXT);
         }
 
-        // 消息时间
-        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(sbn.getPostTime()));
-
+//        ReceiveThread receiveT=new ReceiveThread(text,send);
+//        receiveT.start();
+        //
         if (subText == null){
-            text.setText(maintext);
-            send.performClick();
-
+            try {
+                messageQueue.put(maintext);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
-            text.setText(subText);
-            send.performClick();
+//            text.setText(subText);
+//            send.performClick();
+            try {
+                messageQueue.put(subText);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        //另写一个处理massage的线程，用来更新界面,并进行消息处理
     }
 
     public List<ChatData> initData(){
@@ -272,8 +302,49 @@ public class Conversation extends BaseActivity implements NotifyListener {
         return true;
     }
 
-
 }
+
+class ProcessThread extends Thread {
+    private BlockingQueue<String> messageQueue;
+    private Chat mChat;
+    private Handler processHandler;
+    private boolean mHistory;
+
+    public ProcessThread(BlockingQueue<String> messageQueue, Chat mChat, Handler processHandler, boolean mHistory) {
+        this.messageQueue = messageQueue;
+        this.processHandler=processHandler;
+        this.mChat=mChat;
+        this.mHistory=mHistory;
+    }
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                // 从阻塞队列中取出消息，如果队列为空会阻塞等待
+                String message = messageQueue.take();
+
+                // 在这里处理消息，可以进行耗时操作
+                ResponseThread responseT=new ResponseThread(mChat,message,processHandler,mHistory);
+                responseT.start();
+
+                //等待线程完成
+                try {
+                    responseT.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            } catch (InterruptedException e) {
+                // 处理 InterruptedException 异常
+                e.printStackTrace();
+                // 可以选择在这里结束线程
+                break;
+            }
+        }
+    }
+}
+
 
 class ResponseThread extends Thread {
     private String mInput;
