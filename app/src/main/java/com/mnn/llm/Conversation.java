@@ -152,6 +152,7 @@ public class Conversation extends BaseActivity implements NotifyListener {
             @Override
             public void handleMessage(Message msg) {
                 //当返回消息时，更新聊天界面中的回答
+                //
                 super.handleMessage(msg);
                 ChatData response = new ChatData();
                 response.setTime(mDateFormat.format(new Date()));
@@ -160,6 +161,7 @@ public class Conversation extends BaseActivity implements NotifyListener {
                 mAdapter.updateRecentItem(response);
             }
         };
+
         ProcessThread processT = new ProcessThread(messageQueue,mChat,processHandler,mHistory);
         processT.start();
     }
@@ -236,8 +238,6 @@ public class Conversation extends BaseActivity implements NotifyListener {
             subText = extras.getString(Notification.EXTRA_SUB_TEXT);
         }
 
-//        ReceiveThread receiveT=new ReceiveThread(text,send);
-//        receiveT.start();
         //
         if (subText == null){
             try {
@@ -246,15 +246,12 @@ public class Conversation extends BaseActivity implements NotifyListener {
                 e.printStackTrace();
             }
         } else {
-//            text.setText(subText);
-//            send.performClick();
             try {
                 messageQueue.put(subText);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        //另写一个处理massage的线程，用来更新界面,并进行消息处理
     }
 
     public List<ChatData> initData(){
@@ -310,7 +307,7 @@ class ProcessThread extends Thread {
     private Handler processHandler;
     private boolean mHistory;
 
-    public ProcessThread(BlockingQueue<String> messageQueue, Chat mChat, Handler processHandler, boolean mHistory) {
+    public ProcessThread(BlockingQueue<String> messageQueue, Chat mChat, Handler processHandler,boolean mHistory) {
         this.messageQueue = messageQueue;
         this.processHandler=processHandler;
         this.mChat=mChat;
@@ -323,6 +320,7 @@ class ProcessThread extends Thread {
             try {
                 // 从阻塞队列中取出消息，如果队列为空会阻塞等待
                 String message = messageQueue.take();
+
 
                 // 在这里处理消息，可以进行耗时操作
                 ResponseThread responseT=new ResponseThread(mChat,message,processHandler,mHistory);
@@ -362,6 +360,7 @@ class ResponseThread extends Thread {
     public void run() {
         super.run();
         //通过chat中的submit函数传入输入内容
+
         mChat.Submit(mInput);
         String last_response = "";
         System.out.println("[MNN_DEBUG] start response\n");
